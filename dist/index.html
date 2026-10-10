@@ -7,11 +7,14 @@
   <title>七则star</title>
   <style>
     html, body { margin: 0; width: 100%; min-height: 100%; background: #000; }
-    body { min-height: 100svh; color: #888; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+    body { position: relative; min-height: 100svh; overflow-x: clip; color: #888; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
     .credit { position: fixed; right: max(20px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); margin: 0; font-size: 11px; font-weight: 400; letter-spacing: .5px; }
-    .logo { position: fixed; left: 50%; top: 27%; transform: translate(-50%, -50%); width: min(210px, 36vw); height: auto; display: block; }
-    .npc { position: fixed; width: min(88svh, 145vw); height: min(88svh, 145vw); right: calc(17vw - min(44svh, 72.5vw)); bottom: 36px; object-fit: contain; pointer-events: none; user-select: none; mix-blend-mode: screen; }
-    .credit { z-index: 2; }
+    .logo { position: absolute; left: 50%; top: 27%; transform: translate(-50%, -50%); width: min(210px, 36vw); height: auto; display: block; }
+    .npc { position: absolute; width: min(88svh, 145vw); height: min(88svh, 145vw); right: calc(17vw - min(44svh, 72.5vw)); bottom: 36px; object-fit: contain; pointer-events: none; user-select: none; mix-blend-mode: screen; }
+    .credit { position: absolute; z-index: 2; }
+    @media (max-width: 600px) {
+      .npc { width: 100vw; height: 100vw; right: -32vw; bottom: 48px; }
+    }
   </style>
 </head>
 <body>
