@@ -14,6 +14,7 @@ const server=createServer(async(req,res)=>{
   const pathName=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
   if(pathName==='/health')return json(res,200,{ok:true});
   if(pathName.startsWith('/api/')){
+   if(pathName==='/api/saves'&&req.method==='GET'){const data=await rpc('saves',{p_token:cookie(req)});return json(res,data.error?401:200,data);}
    if(pathName==='/api/session'&&req.method==='GET'){const token=cookie(req);const data=token?await rpc('session',{p_token:token}):{name:null};return json(res,200,{name:data.name},data.name?{'Set-Cookie':`qize_session=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=31536000`}:{});}
    if(req.method!=='POST')return json(res,405,{error:'请求方式不支持。'});
    const origin=req.headers.origin;
@@ -21,6 +22,7 @@ const server=createServer(async(req,res)=>{
    if(req.headers['content-type']?.split(';')[0]!=='application/json')return json(res,415,{error:'请求格式不支持。'});
    const ip=(req.headers['x-forwarded-for']||req.socket.remoteAddress||'unknown').split(',')[0];const now=Date.now();let item=limits.get(ip);if(!item||item.until<now){item={count:0,until:now+60000};limits.set(ip,item);}if(++item.count>20)return json(res,429,{error:'操作过于频繁，请稍后重试。'});
    if(pathName==='/api/logout'){const token=cookie(req);if(token)await rpc('logout',{p_token:token});return json(res,200,{ok:true},{'Set-Cookie':'qize_session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0'});}
+   if(pathName==='/api/save'){const input=await body(req);if(!Number.isInteger(input.slot)||input.slot<1||input.slot>3)return json(res,400,{error:'存档位置无效。'});const result=await rpc('save',{p_token:cookie(req),p_slot:input.slot,p_state:{scene:'board',chapter:1,clues:['identity']}});return json(res,result.error?401:200,result);}
    const action=pathName.slice(5);if(!['login','register'].includes(action))return json(res,404,{error:'接口不存在。'});
    const data=await body(req);const name=typeof data.name==='string'?data.name.normalize('NFKC').trim():'';const password=data.password;
    if(!/^[\p{L}\p{N}_-]{2,24}$/u.test(name)||typeof password!=='string'||Buffer.byteLength(password)<6||Buffer.byteLength(password)>72)return json(res,400,{error:'名字需为2–24个字（文字、数字、下划线）；密码需为6–72字节。'});
