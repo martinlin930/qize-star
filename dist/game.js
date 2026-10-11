@@ -1,5 +1,5 @@
 const $ = (id) => document.getElementById(id);
-const screens = ['menu','room','auth','saves'];
+const screens = ['menu','room','auth','saves','play'];
 let mode = 'login', currentName = null, afterLogin = 'room', saveRows = [];
 function show(screen){screens.forEach(id=>$(id).hidden=id!==screen);window.scrollTo(0,0);}
 function updateAccount(name){currentName=name;$('player').textContent=name?`调查员 · ${name}`:'身份未确认';$('clue-title').textContent=name?'身份已确认':'登录游戏';$('clue-note').textContent=name?'查看你的调查身份':'点击查验 · 建立身份';$('stamp').hidden=!name;$('case-note').textContent=name?`欢迎回来，${name}。你的调查身份已记录。`:'第一条线索：确认你的身份。';$('logout').hidden=!name;$('save-note').textContent=name?'读取中…':'登录后读取存档';saveRows=[];renderSaves();if(name)refreshSaves(false);}
@@ -26,3 +26,5 @@ async function refreshSaves(report){const owner=currentName;try{const data=await
 async function saveSlot(slot){const buttons=$('save-list').querySelectorAll('button');buttons.forEach(x=>x.disabled=true);$('saves-message').textContent='正在保存…';try{const data=await request('save',{slot});saveRows=data.saves;renderSaves();$('save-note').textContent='已有 '+saveRows.length+' 份存档';$('saves-message').textContent='存档已保存到你的账号。';}catch(error){renderSaves();$('saves-message').textContent=error.message;}}
 $('archive').addEventListener('click',()=>{if(!currentName){afterLogin='saves';setMode('login');show('auth');$('name').focus({preventScroll:true});return;}show('saves');$('saves-message').textContent='正在读取…';refreshSaves(true);});
 $('saves-back').addEventListener('click',()=>show('room'));
+
+$('board-start').addEventListener('click',()=>{startMusic();show('play');});
