@@ -12,8 +12,9 @@ $('auth-back').addEventListener('click',()=>show('room'));
 $('switch').addEventListener('click',()=>setMode(mode==='login'?'register':'login'));
 $('auth-form').addEventListener('submit',async(event)=>{event.preventDefault();$('submit').disabled=true;$('form-message').textContent='正在查验身份…';try{const data=await request(mode,{name:$('name').value.trim(),password:$('password').value});$('password').value='';updateAccount(data.name);show(afterLogin);if(afterLogin==='saves')await refreshSaves(true);}catch(error){$('form-message').textContent=error.message;}finally{$('submit').disabled=false;}});
 $('logout').addEventListener('click',async()=>{try{await request('logout',{});updateAccount(null);}catch(error){$('case-note').textContent=error.message;}});
+let musicEnabled=true;
 const bgm=$('bgm');bgm.src=window.QIZE_BGM;
-function startMusic(){if(!bgm.paused)return;bgm.play().catch(()=>{});}
+function startMusic(){if(!musicEnabled||!bgm.paused)return;bgm.play().catch(()=>{});}
 document.addEventListener('click',startMusic);document.addEventListener('touchend',startMusic,{passive:true});document.addEventListener('keydown',startMusic);startMusic();
 let touchX=0,touchY=0;
 document.addEventListener('touchstart',event=>{if(event.touches.length!==1)return;touchX=event.touches[0].clientX;touchY=event.touches[0].clientY;startMusic();},{passive:true});
@@ -27,4 +28,4 @@ async function saveSlot(slot){const buttons=$('save-list').querySelectorAll('but
 $('archive').addEventListener('click',()=>{if(!currentName){afterLogin='saves';setMode('login');show('auth');$('name').focus({preventScroll:true});return;}show('saves');$('saves-message').textContent='正在读取…';refreshSaves(true);});
 $('saves-back').addEventListener('click',()=>show('room'));
 
-$('board-start').addEventListener('click',()=>{startMusic();show('play');});
+$('board-start').addEventListener('click',()=>{musicEnabled=false;bgm.pause();bgm.currentTime=0;show('play');});
