@@ -14,7 +14,7 @@ const server=createServer(async(req,res)=>{
   const pathName=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
   if(pathName==='/health')return json(res,200,{ok:true});
   if(pathName.startsWith('/api/')){
-   if(pathName==='/api/session'&&req.method==='GET'){const token=cookie(req);const data=token?await rpc('session',{p_token:token}):{name:null};return json(res,200,{name:data.name});}
+   if(pathName==='/api/session'&&req.method==='GET'){const token=cookie(req);const data=token?await rpc('session',{p_token:token}):{name:null};return json(res,200,{name:data.name},data.name?{'Set-Cookie':`qize_session=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=31536000`}:{});}
    if(req.method!=='POST')return json(res,405,{error:'请求方式不支持。'});
    const origin=req.headers.origin;
    if(!origin||new URL(origin).host!==req.headers.host)return json(res,403,{error:'请从游戏页面提交。'});
@@ -25,7 +25,7 @@ const server=createServer(async(req,res)=>{
    const data=await body(req);const name=typeof data.name==='string'?data.name.normalize('NFKC').trim():'';const password=data.password;
    if(!/^[\p{L}\p{N}_-]{2,24}$/u.test(name)||typeof password!=='string'||Buffer.byteLength(password)<6||Buffer.byteLength(password)>72)return json(res,400,{error:'名字需为2–24个字（文字、数字、下划线）；密码需为6–72字节。'});
    const result=await rpc(action,{p_name:name,p_password:password});if(result.error)return json(res,400,{error:result.error});
-   return json(res,200,{name:result.name},{'Set-Cookie':`qize_session=${result.token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=604800`});
+   return json(res,200,{name:result.name},{'Set-Cookie':`qize_session=${result.token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=31536000`});
   }
   if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405);return res.end();}
   const path=resolve(root,'.'+(pathName==='/'?'/index.html':pathName));if(!path.startsWith(root)){res.writeHead(403);return res.end();}
