@@ -9,7 +9,7 @@
 <p class="room-intro">灯亮了。线索还在。</p>
 <div class="board-wrap"><div class="board">
 <svg class="threads" viewBox="0 0 760 500" preserveAspectRatio="none" aria-hidden="true"><g fill="none" stroke="#851b20" stroke-width="2"><path d="M155 86L410 200L628 62M410 200L213 388M410 200L625 404M155 86L625 404"/></g><g fill="none" stroke="#cb3b36" stroke-width=".55" opacity=".7"><path d="M154 84L411 199L630 63M411 201L211 389"/></g><g fill="#680e10"><circle cx="707" cy="365" r="3"/><circle cx="674" cy="420" r="6"/><circle cx="625" cy="442" r="2"/><circle cx="697" cy="389" r="2"/><path d="M620 310c-9 23-5 27 0 28s11-3 0-28"/></g></svg>
-<div class="paper photo" aria-hidden="true"><span class="pin"></span><div class="portrait"><img src="npc.svg" alt=""></div><small>目击者 · 记录 01</small></div>
+<button id="archive" class="paper archive" type="button"><span class="pin" aria-hidden="true"></span><span class="archive-icon" aria-hidden="true">▱</span><strong>存档</strong><small id="save-note">登录后读取存档</small></button>
 <div class="paper scrap" aria-hidden="true"><span class="pin"></span><p>旧档案 / 07</p><div class="scratch"></div><div class="scratch"></div><p>不要忘记你的名字</p></div>
 <div class="paper envelope" aria-hidden="true"><span class="pin"></span></div><div class="smear" aria-hidden="true"></div><div class="blood" aria-hidden="true"></div>
 <button id="clue" class="paper clue" type="button"><span class="pin" aria-hidden="true"></span><span class="case-no">线索 01 / 身份档案</span><strong id="clue-title">登录游戏</strong><span id="clue-note" class="note">点击查验 · 建立身份</span><span id="stamp" class="stamp" hidden>已确认</span></button>
@@ -22,4 +22,4 @@
 <form id="auth-form"><label class="field" for="name">名字<input id="name" name="name" autocomplete="username" required minlength="2" maxlength="24" placeholder="你的名字"></label>
 <label class="field" for="password">密码<input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="72" placeholder="至少 6 位"></label>
 <p id="form-message" class="form-message" aria-live="polite"></p><button id="submit" class="submit" type="submit">确认身份</button></form><button id="switch" class="switch" type="button">没有账号？创建一个</button></div></section>
-</main><audio id="bgm" autoplay loop preload="auto"></audio><script src="bgm-data.js"></script><script src="game.js"></script></body></html>
+<section id="saves" class="screen saves-screen" aria-label="账号存档" hidden><button id="saves-back" class="plain auth-back" type="button">← 返回线索板</button><div class="saves-card"><p class="eyebrow">调查档案 / 存档</p><h1>你的存档</h1><p class="sub">记录会随账号保存，登录后可继续读取。</p><div id="save-list"></div><p id="saves-message" class="form-message" aria-live="polite"></p></div></section></main><audio id="bgm" autoplay loop preload="auto"></audio><script src="bgm-data.js"></script><script src="game.js"></script></body></html>
