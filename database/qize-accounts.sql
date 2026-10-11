@@ -1,7 +1,7 @@
 create schema qize_private;
 revoke all on schema qize_private from public;
 create table qize_private.accounts (id uuid primary key default gen_random_uuid(), name text not null, name_key text unique not null, password_hash text not null, created_at timestamptz not null default now());
-create table qize_private.sessions (token_hash text primary key, account_id uuid not null references qize_private.accounts(id) on delete cascade, expires_at timestamptz not null default now()+interval '7 days');
+create table qize_private.sessions (token_hash text primary key, account_id uuid not null references qize_private.accounts(id) on delete cascade, expires_at timestamptz not null default now()+interval '365 days');
 create index on qize_private.sessions(account_id);
 create table qize_private.attempts (name_key text primary key, count integer not null default 1, reset_at timestamptz not null default now()+interval '10 minutes');
 alter table qize_private.accounts enable row level security;
@@ -35,6 +35,7 @@ begin
  v_hash:=encode(extensions.digest(p_token,'sha256'),'hex');
  if p_logout then delete from qize_private.sessions where token_hash=v_hash;return jsonb_build_object('name',null);end if;
  select a.name into v_name from qize_private.sessions s join qize_private.accounts a on a.id=s.account_id where s.token_hash=v_hash and s.expires_at>now();
+ if v_name is not null then update qize_private.sessions set expires_at=now()+interval '365 days' where token_hash=v_hash; end if;
  return jsonb_build_object('name',v_name);
 end;$$;
 revoke all on all functions in schema qize_private from public;
